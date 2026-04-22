@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Family Groups — SpendSmart</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root { --ink: #0d0d0d; --paper: #f5f2eb; --accent: #c8f04a; --card: #fff; --muted: #6b6b6b; --border: rgba(13,13,13,0.1); --danger: #dc2626; --success: #16a34a; --nav-h: 64px; }
+html, body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(--ink); }
+
+.navbar { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); background: var(--ink); display: flex; align-items: center; padding: 0 24px; z-index: 100; gap: 12px; }
+.nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; margin-right: 24px; }
+.nav-brand-icon { width: 32px; height: 32px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+.nav-brand-icon svg { width: 18px; height: 18px; fill: var(--ink); }
+.nav-brand-name { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; color: #fff; }
+.nav-back { color: rgba(255,255,255,0.6); font-size: 13px; display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 10px; transition: all 0.2s; border: none; background: none; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+.nav-back:hover { color: #fff; background: rgba(255,255,255,0.08); }
+
+.main { margin-top: var(--nav-h); padding: 28px 32px; max-width: 1200px; margin-left: auto; margin-right: auto; }
+.page-header { margin-bottom: 28px; }
+.page-header h2 { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; letter-spacing: -0.8px; }
+.page-header p { font-size: 14px; color: var(--muted); margin-top: 4px; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+.card { background: var(--card); border-radius: 18px; border: 1px solid var(--border); padding: 22px 24px; margin-bottom: 20px; }
+.card-title { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 18px; }
+
+.form-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.form-field label { font-size: 12px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.3px; }
+.form-field input, .form-field select { height: 46px; border: 1.5px solid var(--border); border-radius: 12px; background: var(--paper); font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--ink); padding: 0 14px; outline: none; transition: border-color 0.2s; }
+.form-field input:focus, .form-field select:focus { border-color: var(--ink); background: #fff; }
+
+.submit-btn { width: 100%; height: 48px; background: var(--ink); color: var(--accent); border: none; border-radius: 12px; font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+.submit-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(13,13,13,0.2); }
+.submit-btn.secondary { background: var(--paper); color: var(--ink); border: 1.5px solid var(--border); }
+.submit-btn.secondary:hover { background: #eceade; }
+
+.group-card { background: var(--paper); border-radius: 14px; padding: 16px 18px; margin-bottom: 10px; cursor: pointer; transition: all 0.2s; border: 1.5px solid transparent; display: flex; align-items: center; gap: 14px; }
+.group-card:hover { background: #eceade; }
+.group-card.active { border-color: var(--ink); background: #fff; }
+.group-avatar { width: 44px; height: 44px; border-radius: 12px; background: var(--ink); color: var(--accent); font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.group-name { font-size: 14px; font-weight: 500; }
+.group-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.member-chip { display: inline-flex; align-items: center; gap: 6px; background: var(--paper); border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px; font-size: 12px; margin: 3px; }
+.member-avatar { width: 20px; height: 20px; border-radius: 50%; background: var(--ink); color: var(--accent); font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; }
+
+.tx-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 12px; background: var(--paper); margin-bottom: 8px; }
+.tx-icon { width: 36px; height: 36px; border-radius: 10px; background: #ecfccb; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.tx-info { flex: 1; }
+.tx-title { font-size: 13px; font-weight: 500; }
+.tx-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.tx-amount { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; }
+
+.split-card { background: var(--paper); border-radius: 12px; padding: 14px 16px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+.split-name { font-size: 13px; font-weight: 500; }
+.split-amount { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; }
+.split-amount.owes { color: var(--danger); }
+.split-amount.gets { color: var(--success); }
+
+.empty { text-align: center; padding: 36px 20px; color: var(--muted); }
+.empty-icon { font-size: 36px; margin-bottom: 10px; }
+.empty p { font-size: 13px; }
+
+.section-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; margin-bottom: 12px; margin-top: 20px; }
+
+.toast { position: fixed; bottom: 28px; right: 28px; z-index: 999; background: var(--ink); color: #fff; border-radius: 12px; padding: 12px 20px; font-size: 13px; font-weight: 500; box-shadow: 0 8px 32px rgba(13,13,13,0.2); transform: translateY(80px); opacity: 0; transition: all 0.3s ease; }
+.toast.show { transform: translateY(0); opacity: 1; }
+
+.detail-panel { display: none; }
+.detail-panel.active { display: block; animation: fadeUp 0.3s ease; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+@media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } .main { padding: 20px 16px; } }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="nav-brand" href="/pages/dashboard.html">
+    <div class="nav-brand-icon"><svg viewBox="0 0 20 20"><path d="M10 2L2 7v6l8 5 8-5V7L10 2z"/></svg></div>
+    <span class="nav-brand-name">SpendSmart</span>
+  </a>
+  <button class="nav-back" onclick="window.location.href='/pages/dashboard.html'">← Back to Dashboard</button>
+</nav>
+
+<div class="main">
+  <div class="page-header">
+    <h2>Family & Group Expenses 👨‍👩‍👧</h2>
+    <p>Create groups, split expenses, and track who owes what</p>
+  </div>
+
+  <div class="grid-2">
+
+    <!-- LEFT: Group list + create -->
+    <div>
+      <div class="card">
+        <div class="card-title">Create New Group</div>
+        <div class="form-field">
+          <label>Group Name</label>
+          <input type="text" id="group-name" placeholder="e.g. Family, Roommates, Trip...">
+        </div>
+        <button class="submit-btn" onclick="createGroup()">+ Create Group</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">My Groups</div>
+        <div id="groups-list">
+          <div class="empty"><div class="empty-icon">👥</div><p>No groups yet. Create one!</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Group detail -->
+    <div>
+      <div id="no-group-selected" class="card" style="text-align:center;padding:48px 24px">
+        <div style="font-size:48px;margin-bottom:12px">👈</div>
+        <p style="color:var(--muted);font-size:14px">Select a group to view details</p>
+      </div>
+
+      <div class="detail-panel" id="group-detail">
+        <div class="card">
+          <div class="card-title" id="detail-group-name">Group Name</div>
+
+          <div class="section-title">Members</div>
+          <div id="members-list" style="margin-bottom:16px"></div>
+
+          <div class="section-title">Add Member</div>
+          <div style="display:flex;gap:8px">
+            <input type="email" id="member-email" placeholder="member@email.com" style="flex:1;height:40px;border:1.5px solid var(--border);border-radius:10px;background:var(--paper);font-family:'DM Sans',sans-serif;font-size:13px;padding:0 12px;outline:none;">
+            <button class="submit-btn" style="width:auto;padding:0 18px;height:40px;font-size:13px" onclick="addMember()">Add</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Add Group Expense</div>
+          <div class="form-field">
+            <label>What was it for?</label>
+            <input type="text" id="gexp-title" placeholder="e.g. Groceries, Dinner, Rent...">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="form-field">
+              <label>Amount (৳)</label>
+              <input type="number" id="gexp-amount" placeholder="0">
+            </div>
+            <div class="form-field">
+              <label>Date</label>
+              <input type="date" id="gexp-date">
+            </div>
+          </div>
+          <div class="form-field">
+            <label>Note (optional)</label>
+            <input type="text" id="gexp-note" placeholder="Any details...">
+          </div>
+          <button class="submit-btn" onclick="addGroupExpense()">Add Expense</button>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Group Expenses</div>
+          <div id="gexp-list">
+            <div class="empty"><div class="empty-icon">📭</div><p>No expenses yet</p></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Split Summary 💰</div>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:14px">Who paid vs equal share per person</p>
+          <div id="split-summary">
+            <div class="empty"><div class="empty-icon">🧮</div><p>Add expenses to see split</p></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API   = 'http://localhost:5000/api';
+const token = localStorage.getItem('token');
+const me    = JSON.parse(localStorage.getItem('user') || '{}');
+
+if (!token) window.location.href = '/';
+
+let selectedGroupId = null;
+let groupMembers    = [];
+let groupExpenses   = [];
+
+// Set today
+document.getElementById('gexp-date').value = new Date().toISOString().split('T')[0];
+
+async function apiFetch(endpoint, method = 'GET', body = null) {
+  try {
+    const res = await fetch(API + endpoint, {
+      method,
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: body ? JSON.stringify(body) : null
+    });
+    return await res.json();
+  } catch (err) { console.error(err); return null; }
+}
+
+function toast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show';
+  t.style.background = type === 'error' ? '#dc2626' : '#0d0d0d';
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+async function loadGroups() {
+  const data = await apiFetch('/groups');
+  const el   = document.getElementById('groups-list');
+  if (!Array.isArray(data) || !data.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">👥</div><p>No groups yet. Create one!</p></div>';
+    return;
+  }
+  el.innerHTML = data.map(g => `
+    <div class="group-card ${g.id === selectedGroupId ? 'active' : ''}" onclick="selectGroup(${g.id}, '${g.name}')">
+      <div class="group-avatar">${g.name[0].toUpperCase()}</div>
+      <div>
+        <div class="group-name">${g.name}</div>
+        <div class="group-meta">${g.member_count} member${g.member_count !== 1 ? 's' : ''}</div>
+      </div>
+    </div>`).join('');
+}
+
+async function createGroup() {
+  const name = document.getElementById('group-name').value.trim();
+  if (!name) { toast('Enter a group name', 'error'); return; }
+  const result = await apiFetch('/groups', 'POST', { name });
+  if (result && result.id) {
+    document.getElementById('group-name').value = '';
+    toast('✅ Group created!');
+    await loadGroups();
+    selectGroup(result.id, name);
+  } else {
+    toast('❌ Failed to create group', 'error');
+  }
+}
+
+async function selectGroup(id, name) {
+  selectedGroupId = id;
+  document.getElementById('no-group-selected').style.display = 'none';
+  document.getElementById('group-detail').classList.add('active');
+  document.getElementById('detail-group-name').textContent = name + ' 👥';
+  await loadMembers();
+  await loadGroupExpenses();
+  await loadGroups(); // refresh active state
+}
+
+async function loadMembers() {
+  const data = await apiFetch('/groups/' + selectedGroupId + '/members');
+  groupMembers = Array.isArray(data) ? data : [];
+  const el = document.getElementById('members-list');
+  el.innerHTML = groupMembers.length
+    ? groupMembers.map(m => `
+        <span class="member-chip">
+          <span class="member-avatar">${m.name[0].toUpperCase()}</span>
+          ${m.name} ${m.id == me.id ? '(you)' : ''}
+        </span>`).join('')
+    : '<p style="font-size:13px;color:var(--muted)">No members yet</p>';
+}
+
+async function addMember() {
+  const email = document.getElementById('member-email').value.trim();
+  if (!email) { toast('Enter an email', 'error'); return; }
+  const result = await apiFetch('/groups/' + selectedGroupId + '/members', 'POST', { email });
+  if (result && !result.error) {
+    document.getElementById('member-email').value = '';
+    toast('✅ Member added!');
+    await loadMembers();
+    await loadGroups();
+  } else {
+    toast('❌ ' + (result?.error || 'Failed to add member'), 'error');
+  }
+}
+
+async function addGroupExpense() {
+  const title  = document.getElementById('gexp-title').value.trim();
+  const amount = parseFloat(document.getElementById('gexp-amount').value);
+  const date   = document.getElementById('gexp-date').value;
+  const note   = document.getElementById('gexp-note').value;
+  if (!title || !amount || !date) { toast('Fill in title, amount, and date', 'error'); return; }
+  const result = await apiFetch('/groups/' + selectedGroupId + '/expenses', 'POST', { title, amount, date, note });
+  if (result && result.id) {
+    document.getElementById('gexp-title').value  = '';
+    document.getElementById('gexp-amount').value = '';
+    document.getElementById('gexp-note').value   = '';
+    toast('✅ Expense added!');
+    await loadGroupExpenses();
+  } else {
+    toast('❌ Failed to add expense', 'error');
+  }
+}
+
+async function loadGroupExpenses() {
+  const data = await apiFetch('/groups/' + selectedGroupId + '/expenses');
+  groupExpenses = Array.isArray(data) ? data : [];
+
+  const el = document.getElementById('gexp-list');
+  el.innerHTML = groupExpenses.length
+    ? groupExpenses.map(e => `
+        <div class="tx-item">
+          <div class="tx-icon">💸</div>
+          <div class="tx-info">
+            <div class="tx-title">${e.title}</div>
+            <div class="tx-meta">Paid by ${e.paid_by_name} · ${new Date(e.date).toLocaleDateString()}</div>
+          </div>
+          <div class="tx-amount">৳${parseFloat(e.amount).toLocaleString()}</div>
+        </div>`).join('')
+    : '<div class="empty"><div class="empty-icon">📭</div><p>No expenses yet</p></div>';
+
+  renderSplitSummary();
+}
+
+function renderSplitSummary() {
+  const el = document.getElementById('split-summary');
+  if (!groupExpenses.length || !groupMembers.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">🧮</div><p>Add expenses to see split</p></div>';
+    return;
+  }
+
+  const total      = groupExpenses.reduce((s, e) => s + parseFloat(e.amount), 0);
+  const perPerson  = total / groupMembers.length;
+  const paidByEach = {};
+  groupMembers.forEach(m => paidByEach[m.id] = { name: m.name, paid: 0 });
+  groupExpenses.forEach(e => {
+    if (paidByEach[e.paid_by]) paidByEach[e.paid_by].paid += parseFloat(e.amount);
+  });
+
+  el.innerHTML = `
+    <div style="display:flex;justify-content:space-between;padding:10px 16px;background:#ecfccb;border-radius:10px;margin-bottom:12px;font-size:13px">
+      <span>Total: <strong>৳${total.toLocaleString()}</strong></span>
+      <span>Per person: <strong>৳${Math.round(perPerson).toLocaleString()}</strong></span>
+    </div>
+    ${Object.values(paidByEach).map(p => {
+      const diff = p.paid - perPerson;
+      const cls  = diff >= 0 ? 'gets' : 'owes';
+      const lbl  = diff >= 0 ? 'gets back' : 'owes';
+      return `
+        <div class="split-card">
+          <div>
+            <div class="split-name">${p.name}</div>
+            <div style="font-size:11px;color:var(--muted)">Paid ৳${p.paid.toLocaleString()}</div>
+          </div>
+          <div class="split-amount ${cls}">${lbl} ৳${Math.abs(Math.round(diff)).toLocaleString()}</div>
+        </div>`;
+    }).join('')}`;
+}
+
+loadGroups();
+</script>
+</body>
+</html>
