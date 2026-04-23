@@ -596,7 +596,7 @@
 </div>
 
 <script>
-const API = 'http://localhost:5000/api';
+const API = 'window.location.origin + '/api'';
 
 function switchTab(tab) {
   document.getElementById('section-login').classList.toggle('active', tab === 'login');

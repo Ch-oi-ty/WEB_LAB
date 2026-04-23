@@ -1,4 +1,4 @@
-const API = 'http://localhost:5000/api';
+const API = 'window.location.origin + '/api'';
 
 async function apiFetch(endpoint, method='GET', body=null) {
   const token = localStorage.getItem('token');

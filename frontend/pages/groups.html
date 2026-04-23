@@ -181,7 +181,7 @@ html, body { font-family: 'DM Sans', sans-serif; background: var(--paper); color
 <div class="toast" id="toast"></div>
 
 <script>
-const API   = 'http://localhost:5000/api';
+const API   = 'window.location.origin + '/api'';
 const token = localStorage.getItem('token');
 const me    = JSON.parse(localStorage.getItem('user') || '{}');
 
